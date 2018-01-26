@@ -90,3 +90,5 @@ ENV/
 
 # os x
 .DS_Store
+
+.idea
