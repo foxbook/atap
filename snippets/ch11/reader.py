@@ -1,10 +1,7 @@
 #!/usr/bin/env python3
 
 import nltk
-import json
 import pickle
-
-from nltk.tokenize import WordPunctTokenizer
 
 from nltk.corpus.reader.api import CorpusReader
 from nltk.corpus.reader.api import CategorizedCorpusReader
@@ -30,10 +27,6 @@ class PickledCorpusReader(CategorizedCorpusReader, CorpusReader):
         CategorizedCorpusReader.__init__(self, kwargs)
         CorpusReader.__init__(self, root, fileids)
 
-        self._word_tokenizer = WordPunctTokenizer()
-        self._sent_tokenizer = nltk.data.LazyLoader(
-            'tokenizers/punkt/english.pickle')
-
     def _resolve(self, fileids, categories):
         """
         Returns a list of fileids or categories depending on what is passed
@@ -47,10 +40,6 @@ class PickledCorpusReader(CategorizedCorpusReader, CorpusReader):
         if categories is not None:
             return self.fileids(categories)
         return fileids
-
-    def feeds(self):
-        data = self.open('feeds.json')
-        return json.load(data)
 
     def docs(self, fileids=None, categories=None):
         """
@@ -84,15 +73,20 @@ class PickledCorpusReader(CategorizedCorpusReader, CorpusReader):
             for sentence in paragraph:
                 yield sentence
 
-    def tagged(self, fileids=None, categories=None):
-        for sent in self.sents(fileids, categories):
-            for token in sent:
-                yield token
-
     def words(self, fileids=None, categories=None):
         """
         Returns a generator of (token, tag) tuples.
         """
         for sentence in self.sents(fileids, categories):
-            for token, tag in sentence:
+            for token in sentence:
                 yield token
+
+
+if __name__ == '__main__':
+    from collections import Counter
+
+    corpus = PickledCorpusReader('../corpus')
+    words  = Counter(corpus.words())
+
+    msg = "{:,} documents {:,} vocabulary {:,} word count"
+    print(msg.format(len(corpus.fileids()), len(words.keys()), sum(words.values())))

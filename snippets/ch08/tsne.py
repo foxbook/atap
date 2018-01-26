@@ -1,10 +1,7 @@
-import yellowbrick as yb
-from download import download_all
+import os
 from sklearn.datasets.base import Bunch
 from yellowbrick.text import TSNEVisualizer
 from sklearn.feature_extraction.text import TfidfVectorizer
-
-
 
 # The path to the test data sets
 FIXTURES = os.path.join(os.getcwd(), "data")
@@ -29,13 +26,10 @@ def load_corpus(name, download=True):
 
     # Check if the data exists, otherwise download or raise
     if not os.path.exists(path):
-        if download:
-            download_all()
-        else:
-            raise ValueError((
-                "'{}' dataset has not been downloaded, "
-                "use the download.py module to fetch datasets"
-            ).format(name))
+        raise ValueError((
+            "'{}' dataset has not been downloaded, "
+            "use the download.py module to fetch datasets"
+        ).format(name))
 
     # Read the directories in the directory as the categories.
     categories = [

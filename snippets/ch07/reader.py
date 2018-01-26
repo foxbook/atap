@@ -94,5 +94,40 @@ class PickledCorpusReader(CategorizedCorpusReader, CorpusReader):
         Returns a generator of (token, tag) tuples.
         """
         for sentence in self.sents(fileids, categories):
-            for token, tag in sentence:
+            for token, _ in sentence:
                 yield token
+
+    def describe(self, fileids=None, categories=None):
+        """
+        Performs a single pass of the corpus and
+        returns a dictionary with a variety of metrics
+        concerning the state of the corpus.
+        """
+        # Structures to perform counting.
+        counts  = nltk.FreqDist()
+        tokens  = nltk.FreqDist()
+
+        # Perform single pass over paragraphs, tokenize and count
+        for para in self.paras(fileids, categories):
+            for sent in para:
+                for word, tag in sent:
+                    counts['words'] += 1
+                    tokens[word] += 1
+
+        # Return data structure with information
+        return {
+            'words':  counts['words'],
+            'vocab':  len(tokens),
+            'lexdiv': float(counts['words']) / float(len(tokens)),
+        }
+
+if __name__ == '__main__':
+    from collections import Counter
+
+    corpus = PickledCorpusReader('../corpus')
+    words = Counter(corpus.words())
+
+    print("{:,} vocabulary {:,} word count".format(
+        len(words.keys()), sum(words.values())
+        )
+    )

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>The Kitchen Chatbot</title>
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+  <link href="https://getbootstrap.com/docs/4.0/examples/narrow-jumbotron/narrow-jumbotron.css" rel="stylesheet">
+</head>
+<body>
+
+  <div class="container">
+    <header class="header clearfix">
+      <nav>
+        <ul class="nav nav-pills float-right">
+          <li class="nav-item">
+            <a class="nav-link active" href="#">Chat</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">About</a>
+          </li>
+        </ul>
+      </nav>
+      <h3 class="text-muted">The Kitchen Chatbot</h3>
+    </header>
+
+    <main role="main">
+      <!-- Chats are added here -->
+      <div id="chat-scroll" style="height: 500px; overflow-y: scroll; margin-bottom:15px;">
+        <ul id="chat" class="list-unstyled"></li>
+      </div>
+
+      <!-- Chat input is collected here -->
+      <form id="chatbox" action="/chat" method="post">
+        <div class="form-group">
+          <textarea class="form-control" id="message" name="message" rows="2" placeholder="Hi there! Have a question about cooking?"></textarea>
+        </div>
+      </form>
+    </main>
+
+    <footer class="footer">
+      <p><small>&#129418; Applied Text Analysis with Python</small></p>
+    </footer>
+
+  </div>
+  <!-- container ends -->
+
+  <!-- Javascripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.2.2/jquery.form.min.js" integrity="sha384-FzT3vTVGXqf7wRfy8k4BiyzvbNfeYjK+frTVqZeNDFl8woCbF0CYG6g2fMEFFo/i" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+  <script type="text/javascript">
+    $(function() {
+
+      // Add event handler for enter in chat message box
+      $("#message").keypress(function(e) {
+        if (e.which == 13 && !e.shiftKey) {
+          $(this).closest("form").submit();
+          e.preventDefault();
+          return false;
+        }
+      });
+
+      // Add AJAX form submission handlers.
+      $("#chatbox").ajaxForm({
+        resetForm: true,
+        dataType: "json",
+        beforeSubmit: function(data) {
+          var today = new Date();
+          var ts = today.toLocaleString('en-US', { hour: 'numeric', minute:'numeric', hour12: true })
+          addMessage(data[0].value, ts, 'user');
+        },
+        success: function(data) {
+          addMessage(data.message, data.timestamp, data.sender);
+        },
+      });
+
+      // Function to add a chat message to the window
+      function addMessage(msg, ts, sender) {
+        // Create the message from the template
+        var elem = $($("#chat-template").html());
+        elem.find("#sender").attr("alt", sender);
+        elem.find("#time").text(ts);
+        elem.find("#message").text(msg);
+
+        // Set image based on chat or bot
+        if (sender == "user") {
+          elem.find("#sender").attr("src", "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mm&f=y");
+        } else if (sender == "bot") {
+          elem.find("#sender").attr("src", "https://www.gravatar.com/avatar/00000000000000000000000000000004?d=robohash&f=y");
+        } else {
+          elem.find("#sender").attr("src", "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=identicon&f=y");
+        }
+
+        // Append the chat message to the chat list
+        $("#chat").append(elem);
+
+        // Scroll to bottom of the chat window
+        var cs = $("#chat-scroll")
+        cs.scrollTop(cs.prop("scrollHeight"));
+      }
+
+    });
+  </script>
+
+  <template id="chat-template">
+    <li class="media">
+      <img width="32" height="32" id="sender" class="mr-3" src="" alt="sender">
+      <div class="media-body">
+        <p class="mt-0 mb-1"><small id="time" class="text-muted"></small></p>
+        <span id="message"></span>
+      </div>
+    </li>
+  </template>
+
+</body>
+</html>

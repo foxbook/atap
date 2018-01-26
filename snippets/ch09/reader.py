@@ -93,6 +93,21 @@ class PickledCorpusReader(CategorizedCorpusReader, CorpusReader):
         """
         Returns a generator of (token, tag) tuples.
         """
-        for sentence in self.sents(fileids, categories):
-            for token, tag in sentence:
-                yield token
+        for token in self.tagged(fileids, categories):
+            yield token[0]
+
+
+if __name__ == '__main__':
+    from collections import Counter
+
+    corpus = PickledCorpusReader('../corpus')
+    # words = Counter(corpus.words())
+    #
+    # print("{:,} vocabulary {:,} word count".format(
+    #     len(words.keys()), sum(words.values())
+    #     )
+    # )
+    news = corpus.sents(categories='news')
+    print(list(' '.join(word for word, tag in sent) for sent in news)[100:200])
+
+

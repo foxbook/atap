@@ -1,7 +1,8 @@
-import yellowbrick as yb
-from download import download_all
-from sklearn.datasets.base import Bunch
+import os
+
 from yellowbrick.text.freqdist import FreqDistVisualizer
+
+from sklearn.datasets.base import Bunch
 from sklearn.feature_extraction.text import CountVectorizer
 
 # The path to the test data sets
@@ -27,13 +28,10 @@ def load_corpus(name, download=True):
 
     # Check if the data exists, otherwise download or raise
     if not os.path.exists(path):
-        if download:
-            download_all()
-        else:
-            raise ValueError((
-                "'{}' dataset has not been downloaded, "
-                "use the download.py module to fetch datasets"
-            ).format(name))
+        raise ValueError((
+            "'{}' dataset has not been downloaded, "
+            "use the download.py module to fetch datasets"
+        ).format(name))
 
     # Read the directories in the directory as the categories.
     categories = [
@@ -62,6 +60,8 @@ def load_corpus(name, download=True):
         target=target,
     )
 
+
+corpus = load_corpus('hobbies')
 
 # Visualize frequency distribution of top 50 tokens
 vectorizer = CountVectorizer()
