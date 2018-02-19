@@ -9,7 +9,7 @@ def read_html(path):
         for tag in soup.find_all(TAGS):
             yield tag.get_text()
 
-filename = 'five-myths-about-gymnastics.html'
+filename = 'article.html' #Replace with file name from news_crawl.py results.
 
 for paragraph in read_html(filename):
     print(paragraph + "\n")
