@@ -207,14 +207,14 @@ if __name__ == '__main__':
     corpus = PickledCorpusReader('../corpus')
     tokens = [''.join(word) for word in corpus.words()]
     vocab = Counter(tokens)
-    sents = list([word for word in sent] for sent in corpus.sents())
+    sents = list([word[0] for word in sent] for sent in corpus.sents())
 
     counter = count_ngrams(3, vocab, sents)
     knm = KneserNeyModel(counter)
 
+
     def complete(input_text):
         tokenized = nltk.word_tokenize(input_text)
-
         if len(tokenized) < 2:
             response = "Say more."
         else:
