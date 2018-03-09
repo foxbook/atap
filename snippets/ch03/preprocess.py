@@ -1,7 +1,8 @@
 import os
 import nltk
-import shutil
 import pickle
+
+from nltk import pos_tag, sent_tokenize, wordpunct_tokenize
 
 
 class Preprocessor(object):
@@ -22,26 +23,6 @@ class Preprocessor(object):
         """
         self.corpus = corpus
         self.target = target
-
-    @property
-    def target(self):
-        return self._target
-
-    @target.setter
-    def target(self, path):
-        if path is not None:
-            # Normalize the path and make it absolute
-            path = os.path.expanduser(path)
-            path = os.path.expandvars(path)
-            path = os.path.abspath(path)
-
-            if os.path.exists(path):
-                if not os.path.isdir(path):
-                    raise ValueError(
-                        "Please supply a directory to write preprocessed data to."
-                    )
-
-        self._target = path
 
     def fileids(self, fileids=None, categories=None):
         """
@@ -71,25 +52,6 @@ class Preprocessor(object):
         # Return the path to the file relative to the target.
         return os.path.normpath(os.path.join(self.target, parent, basename))
 
-    def replicate(self, source):
-        """
-        Directly copies all files in the source directory to the root of the
-        target directory (does not maintain subdirectory structures). Used to
-        copy over metadata files from the root of the corpus to the target.
-        """
-        names = [
-            name for name in os.listdir(source)
-            if not name.startswith('.')
-        ]
-
-        # Filter out directories and copy files
-        for name in names:
-            src = os.path.abspath(os.path.join(source, name))
-            dst = os.path.abspath(os.path.join(self.target, name))
-
-            if os.path.isfile(src):
-                shutil.copy(src, dst)
-
     def tokenize(self, fileid):
         """
         Segments, tokenizes, and tags a document in the corpus. Returns a
@@ -98,8 +60,8 @@ class Preprocessor(object):
         """
         for paragraph in self.corpus.paras(fileids=fileid):
             yield [
-                nltk.pos_tag(nltk.wordpunct_tokenize(sent))
-                for sent in nltk.sent_tokenize(paragraph)
+                pos_tag(wordpunct_tokenize(sent))
+                for sent in sent_tokenize(paragraph)
             ]
 
     def process(self, fileid):
@@ -127,7 +89,6 @@ class Preprocessor(object):
                 "Please supply a directory to write preprocessed data to."
             )
 
-
         # Create a data structure for the pickle
         document = list(self.tokenize(fileid))
 
@@ -151,9 +112,6 @@ class Preprocessor(object):
         # Make the target directory if it doesn't already exist
         if not os.path.exists(self.target):
             os.makedirs(self.target)
-
-        # First shutil.copy anything in the root directory.
-        self.replicate(self.corpus.root)
 
         # Resolve the fileids to start processing
         for fileid in self.fileids(fileids, categories):
