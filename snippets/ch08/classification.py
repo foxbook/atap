@@ -1,9 +1,15 @@
 import os
 
-from yellowbrick.text.freqdist import FreqDistVisualizer
-
 from sklearn.datasets.base import Bunch
-from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB, MultinomialNB
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.linear_model import SGDClassifier, LogisticRegression
+
+from yellowbrick.classifier import ConfusionMatrix
+from yellowbrick.classifier import ClassificationReport
+from yellowbrick.classifier import ClassPredictionError
 
 # The path to the test data sets
 FIXTURES = os.path.join(os.getcwd(), "data")
@@ -61,50 +67,31 @@ def load_corpus(name, download=True):
     )
 
 
+# Load the data and create document vectors
 corpus = load_corpus('hobbies')
+tfidf  = TfidfVectorizer()
 
-# Visualize frequency distribution of top 50 tokens
-vectorizer = CountVectorizer()
-docs = vectorizer.fit_transform(corpus.data)
-features = vectorizer.get_feature_names()
+docs   = tfidf.fit_transform(corpus.data)
+labels = corpus.target
 
-visualizer = FreqDistVisualizer(features)
-visualizer.fit(docs)
+X_train, X_test, y_train, y_test = train_test_split(docs.toarray(), labels, test_size=0.2, random_state=42)
+
+visualizer = ClassificationReport(GaussianNB(), classes=corpus.categories)
+visualizer.fit(X_train, y_train)  # Fit the training data to the visualizer
+visualizer.score(X_test, y_test)  # Evaluate the model on the test data
 visualizer.poof()
 
-# Visualize stopwords removal
-vectorizer = CountVectorizer(stop_words='english')
-docs = vectorizer.fit_transform(corpus.data)
-features = vectorizer.get_feature_names()
-
-visualizer = FreqDistVisualizer(features)
-visualizer.fit(docs)
+visualizer = ClassificationReport(SGDClassifier(), classes=corpus.categories)
+visualizer.fit(X_train, y_train)  # Fit the training data to the visualizer
+visualizer.score(X_test, y_test)  # Evaluate the model on the test data
 visualizer.poof()
 
-# Visualize different subcorpora
-hobby_types = {}
-
-for category in corpus['categories']:
-    texts = []
-    for idx in range(len(corpus['data'])):
-        if corpus['target'][idx] == category:
-            texts.append(corpus['data'][idx])
-    hobby_types[category] = texts
-
-# cooking
-vectorizer = CountVectorizer(stop_words='english')
-docs = vectorizer.fit_transform(text for text in hobby_types['cooking'])
-features = vectorizer.get_feature_names()
-
-visualizer = FreqDistVisualizer(features)
-visualizer.fit(docs)
+visualizer = ConfusionMatrix(LogisticRegression(), classes=corpus.categories)
+visualizer.fit(X_train, y_train)  # Fit the training data to the visualizer
+visualizer.score(X_test, y_test)  # Evaluate the model on the test data
 visualizer.poof()
 
-# gaming
-vectorizer = CountVectorizer(stop_words='english')
-docs = vectorizer.fit_transform(text for text in hobby_types['gaming'])
-features = vectorizer.get_feature_names()
-
-visualizer = FreqDistVisualizer(features)
-visualizer.fit(docs)
+visualizer = ConfusionMatrix(MultinomialNB(), classes=corpus.categories)
+visualizer.fit(X_train, y_train)  # Fit the training data to the visualizer
+visualizer.score(X_test, y_test)  # Evaluate the model on the test data
 visualizer.poof()

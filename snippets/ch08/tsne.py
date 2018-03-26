@@ -66,7 +66,24 @@ tfidf  = TfidfVectorizer()
 docs   = tfidf.fit_transform(corpus.data)
 labels = corpus.target
 
-# Create the visualizer and draw the vectors
+# Create a visualizer to simply see the vectors plotted in 2D
+tsne = TSNEVisualizer()
+tsne.fit(docs)
+tsne.poof()
+
+
+# Create a visualizer to see how k-means clustering grouped the docs
+from sklearn.cluster import KMeans
+
+clusters = KMeans(n_clusters=5)
+clusters.fit(docs)
+
+tsne = TSNEVisualizer()
+tsne.fit(docs, ["c{}".format(c) for c in clusters.labels_])
+tsne.poof()
+
+
+# Create a visualizer to see how the classes are distributed
 tsne = TSNEVisualizer()
 tsne.fit(docs, labels)
 tsne.poof()

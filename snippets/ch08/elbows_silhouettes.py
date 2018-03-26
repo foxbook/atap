@@ -1,9 +1,9 @@
 import os
-
-from yellowbrick.text.freqdist import FreqDistVisualizer
-
+from sklearn.cluster import KMeans, MiniBatchKMeans
 from sklearn.datasets.base import Bunch
-from sklearn.feature_extraction.text import CountVectorizer
+from yellowbrick.cluster import SilhouetteVisualizer, KElbowVisualizer
+
+from sklearn.feature_extraction.text import TfidfVectorizer
 
 # The path to the test data sets
 FIXTURES = os.path.join(os.getcwd(), "data")
@@ -60,51 +60,16 @@ def load_corpus(name, download=True):
         target=target,
     )
 
-
 corpus = load_corpus('hobbies')
+tfidf  = TfidfVectorizer(stop_words='english')
+docs   = tfidf.fit_transform(corpus.data)
 
-# Visualize frequency distribution of top 50 tokens
-vectorizer = CountVectorizer()
-docs = vectorizer.fit_transform(corpus.data)
-features = vectorizer.get_feature_names()
-
-visualizer = FreqDistVisualizer(features)
+# Instantiate the clustering model and visualizer
+visualizer = SilhouetteVisualizer(KMeans(n_clusters=6))
 visualizer.fit(docs)
 visualizer.poof()
 
-# Visualize stopwords removal
-vectorizer = CountVectorizer(stop_words='english')
-docs = vectorizer.fit_transform(corpus.data)
-features = vectorizer.get_feature_names()
-
-visualizer = FreqDistVisualizer(features)
-visualizer.fit(docs)
-visualizer.poof()
-
-# Visualize different subcorpora
-hobby_types = {}
-
-for category in corpus['categories']:
-    texts = []
-    for idx in range(len(corpus['data'])):
-        if corpus['target'][idx] == category:
-            texts.append(corpus['data'][idx])
-    hobby_types[category] = texts
-
-# cooking
-vectorizer = CountVectorizer(stop_words='english')
-docs = vectorizer.fit_transform(text for text in hobby_types['cooking'])
-features = vectorizer.get_feature_names()
-
-visualizer = FreqDistVisualizer(features)
-visualizer.fit(docs)
-visualizer.poof()
-
-# gaming
-vectorizer = CountVectorizer(stop_words='english')
-docs = vectorizer.fit_transform(text for text in hobby_types['gaming'])
-features = vectorizer.get_feature_names()
-
-visualizer = FreqDistVisualizer(features)
+# Instantiate the clustering model and visualizer
+visualizer = KElbowVisualizer(KMeans(), metric='silhouette', k=[4,10])
 visualizer.fit(docs)
 visualizer.poof()
