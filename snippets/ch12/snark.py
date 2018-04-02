@@ -21,7 +21,7 @@ def documents(corpus):
 def continuous(corpus):
     return list(corpus.scores())
 
-def categorical(corpus):
+def make_categorical(corpus):
     """
     terrible : 0.0 < y <= 3.0
     okay     : 3.0 < y <= 5.0
@@ -44,11 +44,13 @@ def train_model(path, model, continuous=True, saveto=None, cv=12):
     X = documents(corpus)
     if continuous:
         y = continuous(corpus)
+        scoring = 'r2_score'
     else:
-        y = categorical(corpus)
+        y = make_categorical(corpus)
+        scoring = 'f1_score'
 
     # Compute cross validation scores
-    scores = cross_val_score(model, X, y, cv=cv)
+    scores = cross_val_score(model, X, y, cv=cv, scoring=scoring)
 
     # Fit the model on entire data set
     model.fit(X, y)

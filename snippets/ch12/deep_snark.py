@@ -32,12 +32,11 @@ def documents(corpus):
 def continuous(corpus):
     return list(corpus.scores())
 
-def categorical(corpus):
+def make_categorical(corpus):
     return np.digitize(continuous(corpus), [0.0, 3.0, 5.0, 7.0, 10.1])
 
-def binary(corpus):
+def binarize(corpus):
     return np.digitize(continuous(corpus), [0.0, 3.0, 5.1])
-    # return LabelBinarizer().fit_transform(continuous(corpus))
 
 def build_nn():
     """
@@ -82,7 +81,7 @@ def train_model(path, model, reader, saveto=None, cv=12, **kwargs):
     corpus = PickledAmazonReviewsReader(path)
     X = documents(corpus)
     # y = categorical(corpus) # for Pitchfork
-    y = binary(corpus)
+    y = binarize(corpus)
 
     # Compute cross validation scores
     # mp note: http://scikit-learn.org/stable/faq.html#why-do-i-sometime-get-a-crash-freeze-with-n-jobs-1-under-osx-or-linux
