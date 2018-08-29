@@ -148,7 +148,7 @@ class HTMLCorpusReader(CategorizedCorpusReader, CorpusReader):
         tokens  = nltk.FreqDist()
 
         # Perform single pass over paragraphs, tokenize and count
-        for para in self.paras(fileids, categories):
+        for para in self.tokenize(fileids, categories):
             counts['paras'] += 1
 
             for sent in para:
