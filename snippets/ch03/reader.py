@@ -151,10 +151,10 @@ class HTMLCorpusReader(CategorizedCorpusReader, CorpusReader):
         for para in self.paras(fileids, categories):
             counts['paras'] += 1
 
-            for sent in para:
+            for sent in sent_tokenize(para):
                 counts['sents'] += 1
 
-                for word, tag in sent:
+                for word in wordpunct_tokenize(sent):
                     counts['words'] += 1
                     tokens[word] += 1
 
