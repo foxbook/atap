@@ -49,8 +49,8 @@ def gensim_frequency_vectorize(corpus):
     import gensim
 
     id2word = gensim.corpora.Dictionary([
-        list(vectorize(doc)) for doc in corpus]
-    )
+        list(tokenize(doc)) for doc in corpus
+    ])
 
     return [
         id2word.doc2bow(doc) for doc in corpus
