@@ -47,14 +47,10 @@ def sklearn_frequency_vectorize(corpus):
 def gensim_frequency_vectorize(corpus):
     # The Gensim frequency vectorize method
     import gensim
-
-    id2word = gensim.corpora.Dictionary([
-        list(tokenize(doc)) for doc in corpus
-    ])
-
-    return [
-        id2word.doc2bow(doc) for doc in corpus
-    ]
+    
+    tokenized_corpus = [list(tokenize(doc)) for doc in corpus]
+    id2word = gensim.corpora.Dictionary(tokenized_corpus)
+    return [id2word.doc2bow(doc) for doc in tokenized_corpus]
 
 
 def nltk_one_hot_vectorize(corpus):
