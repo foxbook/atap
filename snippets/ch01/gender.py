@@ -23,7 +23,7 @@ FEMALE_WORDS = set([
     "she's",'her','aunt','aunts','bride','daughter','daughters','female',
     'fiancee','girl','girlfriend','girlfriends','girls','goddess',
     'granddaughter','grandma','grandmother','herself','ladies','lady',
-    'lady','mom','moms','mother','mothers','mrs','ms','niece','nieces',
+    'mom','moms','mother','mothers','mrs','ms','niece','nieces',
     'priestess','princess','queens','she','sister','sisters','waitress',
     'widow','widows','wife','wives','woman'
 ])
