@@ -21,7 +21,7 @@ CAT_PATTERN = r'([a-z_\s]+)/.*'
 
 # Tags to extract as paragraphs from the HTML text
 TAGS = [
-    'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'h7', 'p', 'li'
+    'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'li'
 ]
 
 

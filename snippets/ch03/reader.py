@@ -20,7 +20,7 @@ DOC_PATTERN = r'(?!\.)[a-z_\s]+/[a-f0-9]+\.json'
 PKL_PATTERN = r'(?!\.)[a-z_\s]+/[a-f0-9]+\.pickle'
 CAT_PATTERN = r'([a-z_\s]+)/.*'
 
-TAGS = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'h7', 'p', 'li']
+TAGS = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'li']
 
 
 class HTMLCorpusReader(CategorizedCorpusReader, CorpusReader):
