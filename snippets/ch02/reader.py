@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import os
 import nltk
 import codecs
 import sqlite3
