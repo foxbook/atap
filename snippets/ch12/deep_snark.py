@@ -69,7 +69,7 @@ def build_lstm():
     return lstm
 
 @timeit
-def train_model(path, model, reader, saveto=None, cv=12, **kwargs):
+def train_model(path, model, saveto=None, cv=12, **kwargs):
     """
     Trains model from corpus at specified path;
     fitting the model on the full data and
