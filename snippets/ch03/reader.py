@@ -129,7 +129,7 @@ class HTMLCorpusReader(CategorizedCorpusReader, CorpusReader):
         """
         Segments, tokenizes, and tags a document in the corpus.
         """
-        for paragraph in self.paras(fileids=fileids):
+        for paragraph in self.paras(fileids, categories):
             yield [
                 pos_tag(wordpunct_tokenize(sent))
                 for sent in sent_tokenize(paragraph)
