@@ -40,4 +40,4 @@ if __name__ == '__main__':
     from reader import PickledCorpusReader
 
     corpus = PickledCorpusReader('../corpus')
-    loader = CorpusLoader(corpus, 12)
+    loader = CorpusLoader(corpus, folds=12)
