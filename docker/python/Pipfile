@@ -1,0 +1,26 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+jupyterlab = "~=3.1.7"
+numpy = "~=1.21.2"
+pandas = "~=1.3.2"
+scikit-learn = "~=0.24.2"
+nltk = "~=3.6.2"
+gensim = "~=4.0.1"
+spacy = "~=3.1.1"
+networkx = "~=2.6.2"
+readability-lxml = "~=0.8.1"
+beautifulsoup4 = "~=4.9.3"
+tabulate = "~=0.8.9"
+pyLDAvis = "~=3.3.1"
+matplotlib = "~=3.4.3"
+seaborn = "~=0.11.2"
+fuzzywuzzy = "~=0.18.0"
+inflect = "~=5.3.0"
+humanize = "~=3.11.0"
+
+[requires]
+python_version = "3.8"
