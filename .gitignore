@@ -94,6 +94,7 @@ ENV/
 # data
 data/
 xlsx/
+nltk_data/
 
 # ignore
 ignore/

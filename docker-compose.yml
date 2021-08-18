@@ -9,6 +9,7 @@ services:
       - "127.0.0.1:8888:8888"
     volumes:
       - ./python/data:/home/python/project/data
+      - ./python/nltk_data:/home/python/project/nltk_data
       - ./python/source:/home/python/project/source
     command: [
       "pipenv", "run", 
